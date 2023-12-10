@@ -1,0 +1,75 @@
+import os
+
+def display_menu():
+    print("To-Do List Menu:")
+    print("1. View Tasks")
+    print("2. Add Task")
+    print("3. Mark Task as Done")
+    print("4. Clear Completed Tasks")
+    print("5. Exit")
+
+def view_tasks():
+    with open("tasks.txt", "r") as file:
+        tasks = file.readlines()
+        if tasks:
+            print("Tasks:")
+            for i, task in enumerate(tasks, 1):
+                print(f"{i}. {task.strip()}")
+        else:
+            print("No tasks available.")
+
+def add_task():
+    task = input("Enter the task: ")
+    with open("tasks.txt", "a") as file:
+        file.write(task + "\n")
+    print("Task added successfully.")
+
+def mark_as_done():
+    view_tasks()
+    task_index = int(input("Enter the task number to mark as done: ")) - 1
+    tasks = []
+    with open("tasks.txt", "r") as file:
+        tasks = file.readlines()
+
+    if 0 <= task_index < len(tasks):
+        completed_task = tasks.pop(task_index)
+        with open("tasks.txt", "w") as file:
+            file.writelines(tasks)
+        print(f"Task marked as done: {completed_task.strip()}")
+    else:
+        print("Invalid task number.")
+
+def clear_completed_tasks():
+    with open("tasks.txt", "r") as file:
+        tasks = file.readlines()
+
+    remaining_tasks = [task for task in tasks if not task.strip().endswith("(Done)")]
+    
+    with open("tasks.txt", "w") as file:
+        file.writelines(remaining_tasks)
+    
+    print("Completed tasks cleared.")
+
+def main():
+    while True:
+        display_menu()
+        choice = input("Enter your choice (1-5): ")
+
+        if choice == "1":
+            view_tasks()
+        elif choice == "2":
+            add_task()
+        elif choice == "3":
+            mark_as_done()
+        elif choice == "4":
+            clear_completed_tasks()
+        elif choice == "5":
+            print("Exiting the to-do list application. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 5.")
+
+if __name__ == "__main__":
+    if not os.path.exists("tasks.txt"):
+        open("tasks.txt", "w").close()  # Create an empty tasks.txt file if it doesn't exist
+    main()
