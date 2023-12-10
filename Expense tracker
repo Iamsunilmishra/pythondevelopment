@@ -1,0 +1,47 @@
+import os
+import json
+
+def load_data():
+    if os.path.exists("expenses.json"):
+        with open("expenses.json", "r") as file:
+            return json.load(file)
+    else:
+        return {"categories": {}, "expenses": []}
+
+def save_data(data):
+    with open("expenses.json", "w") as file:
+        json.dump(data, file, indent=2)
+
+def display_menu():
+    print("\nExpense Tracker Menu:")
+    print("1. Add Expense")
+    print("2. View Expenses")
+    print("3. View Spending Categories")
+    print("4. Generate Financial Report")
+    print("5. Exit")
+
+def add_expense(data):
+    category = input("Enter the spending category: ")
+    amount = float(input("Enter the expense amount: "))
+    
+    if category not in data["categories"]:
+        data["categories"][category] = 0
+    
+    data["categories"][category] += amount
+    data["expenses"].append({"category": category, "amount": amount})
+    
+    save_data(data)
+    print("Expense added successfully.")
+
+def view_expenses(data):
+    if data["expenses"]:
+        print("\nExpense List:")
+        for expense in data["expenses"]:
+            print(f"{expense['category']}: ${expense['amount']:.2f}")
+    else:
+        print("No expenses recorded.")
+
+def view_categories(data):
+    if data["categories"]:
+        print("\nSpending Categories:")
+        for category, total_amount in data["c
